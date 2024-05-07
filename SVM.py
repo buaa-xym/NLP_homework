@@ -1,5 +1,3 @@
-"""SVM"""
-"""以词为单位"""
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from gensim import corpora, models
@@ -8,15 +6,13 @@ import numpy as np
 import random
 import os
 import nltk
-
-#nltk.download('punkt')
+nltk.download('punkt')
 
 # 定义提取段落的函数
 def extract_paragraphs(corpus_dir, num_paragraphs, max_tokens,charwords):
     paragraphs = []
     labels = []
 
-    # 遍历语料库中的每个txt文件
     for novel_file in os.listdir(corpus_dir):
         if novel_file.endswith('.txt'):
             novel_path = os.path.join(corpus_dir, novel_file)
@@ -24,16 +20,12 @@ def extract_paragraphs(corpus_dir, num_paragraphs, max_tokens,charwords):
             # 读取小说内容
             with open(novel_path, 'r', encoding='gbk', errors='ignore') as file:
                 novel_text = file.read()
-
-            # 根据换行符分割成段落
             novel_paragraphs = novel_text.split('\n')
 
             # 随机抽取一定数量的段落
             random.shuffle(novel_paragraphs)
             for paragraph in novel_paragraphs:
-                # 如果段落长度不超过max_tokens，则添加到数据集中
                 if charwords=="words":
-
                     words = word_tokenize(paragraph)
                 if len(words) <= max_tokens:
                     paragraphs.append(words)
@@ -49,13 +41,9 @@ def train_lda_model(paragraphs, num_topics):
     # 创建字典和语料库
     dictionary = corpora.Dictionary(paragraphs)
     corpus = [dictionary.doc2bow(words) for words in paragraphs]
-
     # 训练LDA模型
     lda_model = models.LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
-
     return lda_model
-
-
 
 if __name__ == '__main__':
     # 语料库路径
@@ -97,7 +85,7 @@ if __name__ == '__main__':
         # 构建SVM模型
         model = SVC(kernel='linear')
 
-        # 训练模型
+        # 训练
         model.fit(X_train, y_train)
 
         # 计算训练准确度
