@@ -14,25 +14,24 @@ def preprocess_corpus( text,cn_stopwords):
 merged_content = ''
 stopwords_file_path = 'cn_stopwords.txt'
 cn_stopwords = load_stopwords(stopwords_file_path)          
-corpus_dict = {}  # 假设这是您的语料库字典
+corpus_dict = {}  
 book_titles_list = "白马啸西风,碧血剑,飞狐外传,连城诀,鹿鼎记,三十三剑客图,射雕英雄传,神雕侠侣,书剑恩仇录,天龙八部,侠客行,笑傲江湖,雪山飞狐,倚天屠龙记,鸳鸯刀,越女剑"#
 for book_title in book_titles_list.split(','):
     book_title = book_title.strip()  # 去除可能存在的多余空白字符
     file_path='jyxstxtqj_downcc.com\{}.txt'.format(book_title)
     with open(file_path, 'r', encoding='utf-8') as f:
         merged_content += f.read()
-    # 保存合并后的内容到新的文本文件
     merged_content=preprocess_corpus( merged_content,cn_stopwords)
 output_file_path = '{}.txt'.format("all")
 with open(output_file_path, 'w', encoding='utf-8') as f:
     f.write(merged_content)
 
 
-# 使用GPT-2模型和分词器
+
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 model = GPT2LMHeadModel.from_pretrained('gpt2')
 
-# 创建数据集
+
 dataset = TextDataset(
     tokenizer=tokenizer,
     file_path="all.txt",
@@ -44,7 +43,7 @@ data_collator = DataCollatorForLanguageModeling(
     mlm=False,
 )
 
-# 训练模型
+
 training_args = TrainingArguments(
     output_dir="./gpt2_jin_yong",
     overwrite_output_dir=True,
